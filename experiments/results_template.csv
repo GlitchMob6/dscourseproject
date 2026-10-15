@@ -1,0 +1,7 @@
+Experiment_ID,Concept,Architecture,Operation,Record_Count,Total_Time_ms,Throughput_ops_sec,Avg_Latency_ms,Notes
+EXP-01,Data Replication,Replica Set rs0,Direct Insert w:1,1000,,,Primary ack
+EXP-02,Data Consistency,Replica Set rs0,Direct Insert w:majority,1000,,,Majority quorum ack
+EXP-03,Scalability,Standalone (27017),Bulk Insert,1000,,,Single node baseline
+EXP-04,Scalability,Sharded Cluster (mongos 27050),Bulk Insert,1000,,,Distributed chunk routing
+EXP-05,Distributed Query,Sharded Cluster (mongos),Targeted Query (Category),100,,,SINGLE_SHARD execution
+EXP-06,Distributed Query,Sharded Cluster (mongos),Scatter-Gather (Author),100,,,SHARD_MERGE execution

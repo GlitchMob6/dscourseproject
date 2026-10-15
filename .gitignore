@@ -1,0 +1,32 @@
+# MongoDB runtime databases and logs
+data/
+*.log
+*.lock
+mongod.lock
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+
+# OS specific
+Thumbs.db
+Desktop.ini
+
+# Frontend / Node
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+frontend/.tmp/
+.eslintcache
+
+# Environment & IDE
+.env
+.env.*
+.vscode/
+.idea/
+
+
