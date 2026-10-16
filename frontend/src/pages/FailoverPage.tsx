@@ -104,7 +104,7 @@ export const FailoverPage: React.FC = () => {
       {/* Cluster Node Status Cards */}
       <div>
         <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3 flex items-center gap-2">
-          <Server className="w-4 h-4 text-cyan-400" />
+          <Server className="w-4 h-4 text-[var(--accent-primary)]" />
           Active Replica Set Health
         </div>
 
@@ -115,11 +115,11 @@ export const FailoverPage: React.FC = () => {
           </div>
         ) : !status?.connected ? (
           <div className="card text-center py-8">
-            <AlertTriangle className="w-8 h-8 text-rose-500 mx-auto mb-2" />
-            <h4 className="text-sm font-semibold text-white mb-1">
+            <AlertTriangle className="w-8 h-8 text-[var(--status-error)] mx-auto mb-2" />
+            <h4 className="text-sm font-semibold text-[var(--text-primary)] font-serif mb-1">
               Replica Set rs0 Unreachable
             </h4>
-            <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
+            <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
               Please ensure your 3 MongoDB nodes (ports 27018, 27019, 27020) are started.
             </p>
           </div>
@@ -138,39 +138,39 @@ export const FailoverPage: React.FC = () => {
                   <div
                     className={`node-role ${
                       isPrimary
-                        ? 'text-emerald-400'
+                        ? 'text-[var(--status-success)] font-bold'
                         : isHealthy
-                        ? 'text-blue-400'
-                        : 'text-rose-400'
+                        ? 'text-[var(--accent-primary)] font-bold'
+                        : 'text-[var(--status-error)] font-bold'
                     }`}
                   >
                     {node.state}
                   </div>
-                  <div className="text-base font-bold text-white font-mono mb-1">
+                  <div className="text-base font-bold text-[var(--text-primary)] font-mono mb-1">
                     {node.name}
                   </div>
 
                   <div className="p-2.5 bg-[var(--bg-primary)] rounded border border-[var(--border)] text-left text-xs space-y-1 font-mono">
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">State:</span>
+                      <span className="text-[var(--text-secondary)]">State:</span>
                       <span
                         className={
-                          isHealthy ? 'text-emerald-400' : 'text-rose-400'
+                          isHealthy ? 'text-[var(--status-success)] font-bold' : 'text-[var(--status-error)] font-bold'
                         }
                       >
                         {node.health}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Uptime:</span>
-                      <span className="text-slate-300">
+                      <span className="text-[var(--text-secondary)]">Uptime:</span>
+                      <span className="text-[var(--text-primary)]">
                         {Math.floor(node.uptime / 60)} min
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Oplog TS:</span>
+                      <span className="text-[var(--text-secondary)]">Oplog TS:</span>
                       <span
-                        className="text-cyan-400 truncate max-w-[120px]"
+                        className="text-[var(--accent-primary)] font-bold truncate max-w-[120px]"
                         title={node.optime}
                       >
                         {node.optime}
@@ -189,7 +189,7 @@ export const FailoverPage: React.FC = () => {
         {/* Fault Tolerance Demo (Crash Secondary) */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-amber-400">
+            <span className="card-title flex items-center gap-2 text-[var(--accent-gold)] font-serif">
               <Power className="w-4 h-4" />
               Demo 1: Secondary Node Crash & Quorum Survival
             </span>
@@ -212,7 +212,7 @@ export const FailoverPage: React.FC = () => {
         {/* Primary Failover Demo (Leader Election) */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-rose-400">
+            <span className="card-title flex items-center gap-2 text-[var(--status-error)] font-serif">
               <RotateCcw className="w-4 h-4" />
               Demo 2: Primary Node Crash & Automatic Election
             </span>
@@ -237,15 +237,15 @@ export const FailoverPage: React.FC = () => {
       {runningType && (
         <div className="card py-12 text-center text-xs text-[var(--text-muted)]">
           <div className="loading-spinner mb-3" />
-          <div className="text-white text-sm font-semibold mb-1">
+          <div className="text-[var(--text-primary)] text-sm font-semibold font-serif mb-1">
             Running {runningType === 'failover' ? 'Leader Election' : 'Fault Tolerance'} Experiment...
           </div>
-          <p>Stopping mongod node, measuring failover downtime, and restarting process.</p>
+          <p className="text-[var(--text-secondary)]">Stopping mongod node, measuring failover downtime, and restarting process.</p>
         </div>
       )}
 
       {errorMsg && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded text-xs text-rose-400">
+        <div className="p-4 bg-[var(--status-error)]/10 border border-[var(--status-error)]/30 rounded text-xs text-[var(--status-error)]">
           <strong>Error during failover experiment:</strong> {errorMsg}
         </div>
       )}
@@ -253,8 +253,8 @@ export const FailoverPage: React.FC = () => {
       {experimentResult && (
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="card-title flex items-center gap-2 font-serif">
+              <CheckCircle2 className="w-4 h-4 text-[var(--status-success)]" />
               Experiment Execution Timeline & Results
             </span>
             {experimentResult.failoverDurationSeconds && (
@@ -276,7 +276,7 @@ export const FailoverPage: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-white">
+                    <h4 className="text-xs font-semibold text-[var(--text-primary)] font-serif">
                       Step {st.step}: {st.title}
                     </h4>
                     <span
@@ -288,12 +288,12 @@ export const FailoverPage: React.FC = () => {
                     </span>
                   </div>
                   {st.description && (
-                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">
                       {st.description}
                     </p>
                   )}
                   {st.details && (
-                    <div className="mt-2 p-2 bg-[var(--bg-primary)] rounded border border-[var(--border)] font-mono text-[11px] text-cyan-400">
+                    <div className="mt-2 json-viewer text-[11px]">
                       {typeof st.details === 'object'
                         ? JSON.stringify(st.details, null, 2)
                         : st.details}
@@ -308,7 +308,7 @@ export const FailoverPage: React.FC = () => {
 
       {/* Distributed Consensus Explainer */}
       <div className="info-panel">
-        <h4>Heartbeat Protocol & Split-Brain Prevention</h4>
+        <h4 className="font-serif text-[var(--accent-primary)]">Heartbeat Protocol & Split-Brain Prevention</h4>
         <p>
           Replica set nodes exchange periodic heartbeats every 2 seconds. If a secondary does not receive a heartbeat from the primary
           within the election timeout period (default 10s), it transitions to candidate state and requests votes.

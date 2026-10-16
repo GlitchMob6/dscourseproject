@@ -77,13 +77,13 @@ export const Layout: React.FC = () => {
   const getModeColor = (mode?: string) => {
     switch (mode) {
       case 'REPLICA_SET':
-        return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        return 'text-[var(--accent-green)] bg-[var(--accent-green-bg)] border-[var(--accent-green-border)]';
       case 'SHARDED':
-        return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20';
+        return 'text-[var(--accent-blue)] bg-[var(--accent-blue-bg)] border-[var(--accent-blue-border)]';
       case 'STANDALONE':
-        return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+        return 'text-[var(--accent-yellow)] bg-[var(--accent-yellow-bg)] border-[var(--accent-yellow-border)]';
       default:
-        return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+        return 'text-[var(--text-secondary)] bg-[var(--bg-card)] border-[var(--border)]';
     }
   };
 
@@ -93,7 +93,7 @@ export const Layout: React.FC = () => {
       <aside className="sidebar">
         <div className="sidebar-brand">
           <div className="flex items-center gap-2.5">
-            <Library className="w-5 h-5 text-cyan-400" />
+            <Library className="w-5 h-5 text-[var(--accent-primary)]" />
             <div>
               <h1>DISTRIBUTED LIBRARY</h1>
               <p>MongoDB Cluster Management</p>
@@ -181,14 +181,14 @@ export const Layout: React.FC = () => {
         </nav>
 
         {/* Sidebar Mini Status Footer */}
-        <div className="p-4 border-t border-[var(--border)] text-xs text-[var(--text-muted)]" style={{background: 'linear-gradient(180deg, rgba(6,182,212,0.03) 0%, transparent 100%)'}}>
+        <div className="p-4 border-t border-[var(--border)] text-xs text-[var(--text-muted)]" style={{background: 'linear-gradient(180deg, rgba(107,50,24,0.04) 0%, transparent 100%)'}}>
           <div className="flex items-center justify-between mb-2">
-            <span className="uppercase tracking-wider text-[10px] font-semibold">Active Target</span>
-            <span className="font-mono text-[var(--text-secondary)] text-[11px] font-medium">
+            <span className="uppercase tracking-wider text-[10px] font-semibold text-[var(--accent-primary)]">Active Target</span>
+            <span className="font-mono text-[var(--text-secondary)] text-[11px] font-semibold">
               {health?.mode || 'DETECTING'}
             </span>
           </div>
-          <div className="truncate text-[10px] font-mono text-slate-500 bg-[var(--bg-primary)] rounded px-2 py-1.5">
+          <div className="truncate text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded px-2 py-1.5">
             {health?.uri ? health.uri.split('?')[0] : 'Connecting...'}
           </div>
         </div>
@@ -205,12 +205,12 @@ export const Layout: React.FC = () => {
                   health?.connected ? 'green' : 'red'
                 }`}
               />
-              <span>{health?.connected ? 'MongoDB Online' : 'Database Offline'}</span>
+              <span className="font-semibold text-xs">{health?.connected ? 'MongoDB Online' : 'Database Offline'}</span>
             </div>
 
             {/* Architecture Mode Badge & Switcher */}
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-[var(--text-muted)]">Mode:</span>
+              <span className="text-[var(--text-secondary)] font-medium">Mode:</span>
               <select
                 className={`px-2.5 py-1 rounded text-xs font-semibold border cursor-pointer bg-[var(--bg-card)] ${getModeColor(
                   health?.mode
@@ -232,7 +232,7 @@ export const Layout: React.FC = () => {
               className="btn btn-sm"
               title="Inspect All 3 Database Topologies"
             >
-              <Server className="w-3.5 h-3.5 text-cyan-400" />
+              <Server className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
               <span>Probe Topologies</span>
             </button>
 
@@ -244,7 +244,7 @@ export const Layout: React.FC = () => {
               className="btn btn-sm"
               title="Refresh Health"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
             </button>
           </div>
         </header>
@@ -264,12 +264,12 @@ export const Layout: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="modal-title mb-0 flex items-center gap-2">
-                <Server className="w-4 h-4 text-cyan-400" />
+                <Server className="w-4 h-4 text-[var(--accent-primary)]" />
                 MongoDB Topologies Probe
               </h3>
               <button
                 onClick={() => setProbeOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[var(--text-secondary)] hover:text-[var(--accent-dark)] font-bold text-base"
               >
                 ✕
               </button>
@@ -289,7 +289,7 @@ export const Layout: React.FC = () => {
                 {/* Standalone */}
                 <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-xs text-white">Standalone Node (Port 27017)</span>
+                    <span className="font-semibold text-xs text-[var(--text-primary)]">Standalone Node (Port 27017)</span>
                     {probeData.standalone.available ? (
                       <span className="badge badge-green flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Online
@@ -310,7 +310,7 @@ export const Layout: React.FC = () => {
                 {/* Replica Set */}
                 <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-xs text-white">Replica Set rs0 (Ports 27018-27020)</span>
+                    <span className="font-semibold text-xs text-[var(--text-primary)]">Replica Set rs0 (Ports 27018-27020)</span>
                     {probeData.replica_set.available ? (
                       <span className="badge badge-green flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Active Primary
@@ -331,7 +331,7 @@ export const Layout: React.FC = () => {
                 {/* Sharded Cluster */}
                 <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-xs text-white">Sharded Cluster mongos (Port 27050)</span>
+                    <span className="font-semibold text-xs text-[var(--text-primary)]">Sharded Cluster mongos (Port 27050)</span>
                     {probeData.sharded.available ? (
                       <span className="badge badge-green flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> mongos Active

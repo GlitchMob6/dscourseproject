@@ -54,7 +54,7 @@ export const OverviewPage: React.FC = () => {
         <div className="card">
           <div className="card-header">
             <span className="card-title">Catalog Size</span>
-            <BookOpen className="w-5 h-5 text-blue-400" />
+            <BookOpen className="w-5 h-5 text-[var(--accent-primary)]" />
           </div>
           <div className="stat-value">{health?.stats?.books ?? '—'}</div>
           <div className="stat-label">Total Books in library_db</div>
@@ -63,7 +63,7 @@ export const OverviewPage: React.FC = () => {
         <div className="card">
           <div className="card-header">
             <span className="card-title">Registered Members</span>
-            <Users className="w-5 h-5 text-emerald-400" />
+            <Users className="w-5 h-5 text-[var(--accent-green)]" />
           </div>
           <div className="stat-value">{health?.stats?.members ?? '—'}</div>
           <div className="stat-label">Active library cardholders</div>
@@ -72,7 +72,7 @@ export const OverviewPage: React.FC = () => {
         <div className="card">
           <div className="card-header">
             <span className="card-title">Total Circulation</span>
-            <Repeat className="w-5 h-5 text-purple-400" />
+            <Repeat className="w-5 h-5 text-[var(--accent-secondary)]" />
           </div>
           <div className="stat-value">{health?.stats?.transactions ?? '—'}</div>
           <div className="stat-label">Lifetime borrow/return events</div>
@@ -81,9 +81,9 @@ export const OverviewPage: React.FC = () => {
         <div className="card">
           <div className="card-header">
             <span className="card-title">Active Issues</span>
-            <Zap className="w-5 h-5 text-amber-400" />
+            <Zap className="w-5 h-5 text-[var(--accent-gold-dark)]" />
           </div>
-          <div className="stat-value text-amber-400">
+          <div className="stat-value text-[var(--accent-gold-dark)]">
             {health?.stats?.active_issues ?? '—'}
           </div>
           <div className="stat-label">Books currently checked out</div>
@@ -96,7 +96,7 @@ export const OverviewPage: React.FC = () => {
         <div className="card col-span-2">
           <div className="card-header">
             <span className="card-title flex items-center gap-2">
-              <Server className="w-4 h-4 text-cyan-400" />
+              <Server className="w-4 h-4 text-[var(--accent-primary)]" />
               Active Database Topology
             </span>
             <span
@@ -113,20 +113,20 @@ export const OverviewPage: React.FC = () => {
               <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
                 Operating Mode
               </div>
-              <div className="text-base font-bold text-white flex items-center gap-2">
+              <div className="text-base font-bold text-[var(--accent-dark)] flex items-center gap-2">
                 <span>{health?.mode || 'UNKNOWN'}</span>
                 {health?.mode === 'REPLICA_SET' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-green-bg)] text-[var(--accent-green)] border border-[var(--accent-green-border)] font-semibold">
                     High Availability
                   </span>
                 )}
                 {health?.mode === 'SHARDED' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-blue-bg)] text-[var(--accent-blue)] border border-[var(--accent-blue-border)] font-semibold">
                     Horizontal Scale
                   </span>
                 )}
                 {health?.mode === 'STANDALONE' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-yellow-bg)] text-[var(--accent-yellow)] border border-[var(--accent-yellow-border)] font-semibold">
                     Baseline
                   </span>
                 )}
@@ -137,14 +137,14 @@ export const OverviewPage: React.FC = () => {
               <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
                 Primary Master / Router
               </div>
-              <div className="text-sm font-mono text-cyan-400 truncate">
+              <div className="text-sm font-mono text-[var(--accent-primary)] font-semibold truncate">
                 {health?.primary_host || health?.uri?.split('/')[2] || 'N/A'}
               </div>
             </div>
           </div>
 
           {/* Connection URI info */}
-          <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md text-xs font-mono text-slate-400 mb-4 overflow-x-auto">
+          <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md text-xs font-mono text-[var(--text-secondary)] mb-4 overflow-x-auto">
             <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1">
               Connection String
             </div>
@@ -163,8 +163,8 @@ export const OverviewPage: React.FC = () => {
                     key={i}
                     className={`px-2.5 py-1 text-xs rounded border font-mono ${
                       host === health.primary_host
-                        ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 font-bold'
-                        : 'bg-[var(--bg-primary)] text-slate-400 border-[var(--border)]'
+                        ? 'bg-[var(--accent-green-bg)] text-[var(--accent-green)] border-[var(--accent-green-border)] font-bold'
+                        : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] border-[var(--border)]'
                     }`}
                   >
                     {host} {host === health.primary_host ? '★ PRIMARY' : 'SECONDARY'}
@@ -180,7 +180,7 @@ export const OverviewPage: React.FC = () => {
           <div>
             <div className="card-header">
               <span className="card-title flex items-center gap-2">
-                <Layers className="w-4 h-4 text-purple-400" />
+                <Layers className="w-4 h-4 text-[var(--accent-primary)]" />
                 Distributed Systems Labs
               </span>
             </div>
@@ -191,64 +191,64 @@ export const OverviewPage: React.FC = () => {
             <div className="space-y-2">
               <Link
                 to="/replication"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-slate-200 transition"
+                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
               >
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <ShieldCheck className="w-4 h-4 text-[var(--accent-green)]" />
                   <span>Replication Verification</span>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
               </Link>
 
               <Link
                 to="/consistency"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-slate-200 transition"
+                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
               >
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-blue-400" />
+                  <Activity className="w-4 h-4 text-[var(--accent-blue)]" />
                   <span>Write Concern & Read Prefs</span>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
               </Link>
 
               <Link
                 to="/failover"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-slate-200 transition"
+                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
               >
                 <div className="flex items-center gap-2">
-                  <HardDrive className="w-4 h-4 text-rose-400" />
+                  <HardDrive className="w-4 h-4 text-[var(--accent-red)]" />
                   <span>Failover & Leader Election</span>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
               </Link>
 
               <Link
                 to="/sharding"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-slate-200 transition"
+                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
               >
                 <div className="flex items-center gap-2">
-                  <HardDrive className="w-4 h-4 text-cyan-400" />
+                  <HardDrive className="w-4 h-4 text-[var(--accent-primary)]" />
                   <span>Sharding & Chunk Balancing</span>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
               </Link>
 
               <Link
                 to="/benchmarks"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-slate-200 transition"
+                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
               >
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-400" />
+                  <Zap className="w-4 h-4 text-[var(--accent-gold-dark)]" />
                   <span>Cross-Architecture Benchmarks</span>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--accent-secondary)]" />
               </Link>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-center text-[11px] text-[var(--text-muted)]">
             <span>Library Service v1.0</span>
-            <span className="text-cyan-400 font-mono">Academic UI</span>
+            <span className="text-[var(--accent-primary)] font-mono font-semibold">Academic UI</span>
           </div>
         </div>
       </div>
@@ -257,7 +257,7 @@ export const OverviewPage: React.FC = () => {
       <div className="card">
         <div className="card-header">
           <span className="card-title flex items-center gap-2">
-            <Repeat className="w-4 h-4 text-cyan-400" />
+            <Repeat className="w-4 h-4 text-[var(--accent-primary)]" />
             Recent Circulation Transactions
           </span>
           <Link to="/transactions" className="btn btn-sm">
@@ -293,19 +293,19 @@ export const OverviewPage: React.FC = () => {
               <tbody>
                 {recentTxns.map((tx) => (
                   <tr key={tx.transactionId}>
-                    <td className="font-mono text-xs font-semibold text-cyan-400">
+                    <td className="font-mono text-xs font-semibold text-[var(--accent-primary)]">
                       {tx.transactionId}
                     </td>
-                    <td className="font-mono text-xs text-slate-300">
+                    <td className="font-mono text-xs text-[var(--text-secondary)]">
                       {tx.bookId}
                     </td>
-                    <td className="font-mono text-xs text-slate-300">
+                    <td className="font-mono text-xs text-[var(--text-secondary)]">
                       {tx.memberId}
                     </td>
-                    <td className="text-xs">
+                    <td className="text-xs text-[var(--text-primary)]">
                       {new Date(tx.issueDate).toLocaleString()}
                     </td>
-                    <td className="text-xs">
+                    <td className="text-xs text-[var(--text-primary)]">
                       {tx.returnDate ? new Date(tx.returnDate).toLocaleString() : '—'}
                     </td>
                     <td>

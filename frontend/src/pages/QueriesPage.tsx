@@ -84,8 +84,8 @@ export const QueriesPage: React.FC = () => {
       {/* Preset Query Pickers */}
       <div className="card">
         <div className="card-header">
-          <span className="card-title flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+          <span className="card-title flex items-center gap-2 font-serif">
+            <Sparkles className="w-4 h-4 text-[var(--accent-primary)]" />
             Preset Academic Scenarios
           </span>
         </div>
@@ -99,7 +99,7 @@ export const QueriesPage: React.FC = () => {
               className="p-3 text-left rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] transition space-y-1"
             >
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-xs text-white">
+                <span className="font-semibold text-xs text-[var(--text-primary)] font-serif">
                   {ex.name}
                 </span>
                 <span
@@ -112,10 +112,10 @@ export const QueriesPage: React.FC = () => {
                   {ex.name.startsWith('Targeted') ? 'TARGETED' : 'SCATTER-GATHER'}
                 </span>
               </div>
-              <p className="text-[11px] text-[var(--text-muted)]">
+              <p className="text-[11px] text-[var(--text-secondary)]">
                 {ex.description}
               </p>
-              <div className="font-mono text-[10px] text-cyan-400 truncate pt-1">
+              <div className="font-mono text-[10px] text-[var(--accent-primary)] font-bold truncate pt-1">
                 {JSON.stringify(ex.filter)}
               </div>
             </button>
@@ -166,14 +166,14 @@ export const QueriesPage: React.FC = () => {
       {result && (
         <div className="space-y-6">
           {result.error ? (
-            <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded text-xs text-rose-400">
+            <div className="p-4 bg-[var(--status-error)]/10 border border-[var(--status-error)]/30 rounded text-xs text-[var(--status-error)]">
               <strong>Query Planning Error:</strong> {result.error}
             </div>
           ) : (
             <div className="card space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <h3 className="text-base font-bold text-[var(--text-primary)] font-serif flex items-center gap-2">
                     {result.queryName}
                   </h3>
                   <div className="text-xs text-[var(--text-muted)] font-mono mt-0.5">
@@ -202,10 +202,10 @@ export const QueriesPage: React.FC = () => {
                   <div className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">
                     Shards Contacted
                   </div>
-                  <div className="text-lg font-bold text-white font-mono mt-1">
+                  <div className="text-lg font-bold text-[var(--text-primary)] font-mono mt-1">
                     {result.shardsInvolved?.length || 0}
                   </div>
-                  <div className="text-[10px] text-cyan-400 font-mono truncate">
+                  <div className="text-[10px] text-[var(--accent-primary)] font-mono font-bold truncate">
                     {result.shardsInvolved?.join(', ') || 'N/A'}
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export const QueriesPage: React.FC = () => {
                   <div className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">
                     Execution Time
                   </div>
-                  <div className="text-lg font-bold text-emerald-400 font-mono mt-1">
+                  <div className="text-lg font-bold text-[var(--status-success)] font-mono mt-1">
                     {result.executionStats?.executionTimeMillis ?? '—'} ms
                   </div>
                   <div className="text-[10px] text-[var(--text-muted)]">
@@ -226,7 +226,7 @@ export const QueriesPage: React.FC = () => {
                   <div className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">
                     Docs Examined
                   </div>
-                  <div className="text-lg font-bold text-white font-mono mt-1">
+                  <div className="text-lg font-bold text-[var(--text-primary)] font-mono mt-1">
                     {result.executionStats?.totalDocsExamined ?? '—'}
                   </div>
                   <div className="text-[10px] text-[var(--text-muted)]">
@@ -238,7 +238,7 @@ export const QueriesPage: React.FC = () => {
                   <div className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">
                     Winning Stage
                   </div>
-                  <div className="text-lg font-bold text-purple-400 font-mono mt-1">
+                  <div className="text-lg font-bold text-[var(--accent-copper)] font-mono mt-1">
                     {result.stage}
                   </div>
                   <div className="text-[10px] text-[var(--text-muted)]">
@@ -249,7 +249,7 @@ export const QueriesPage: React.FC = () => {
 
               {/* Plain-English Explanation */}
               <div className="p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md">
-                <div className="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <div className="text-xs font-semibold text-[var(--accent-primary)] font-serif uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <HelpCircle className="w-3.5 h-3.5" />
                   mongos Router Architectural Decision:
                 </div>
@@ -263,7 +263,7 @@ export const QueriesPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowRawPlan(!showRawPlan)}
-                  className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white"
+                  className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   {showRawPlan ? (
                     <ChevronDown className="w-3.5 h-3.5" />
@@ -286,7 +286,7 @@ export const QueriesPage: React.FC = () => {
 
       {/* Explainer Panel */}
       <div className="info-panel">
-        <h4>Targeted vs Scatter-Gather Queries in Sharded Clusters</h4>
+        <h4 className="font-serif text-[var(--accent-primary)]">Targeted vs Scatter-Gather Queries in Sharded Clusters</h4>
         <p>
           When an application executes a query through a mongos router, mongos inspects the query filter against its internal
           chunk cache. If the query includes the shard key prefix (e.g. <code>category</code>), mongos calculates the exact shard

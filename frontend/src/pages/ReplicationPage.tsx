@@ -94,11 +94,11 @@ export const ReplicationPage: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-2">
-            <Server className="w-4 h-4 text-cyan-400" />
+            <Server className="w-4 h-4 text-[var(--accent-primary)]" />
             Active Replica Set Members (rs0)
           </div>
           {status?.primary && (
-            <span className="text-xs font-mono text-emerald-400">
+            <span className="text-xs font-mono text-[var(--status-success)] font-medium">
               Primary: {status.primary}
             </span>
           )}
@@ -111,11 +111,11 @@ export const ReplicationPage: React.FC = () => {
           </div>
         ) : !status?.connected ? (
           <div className="card text-center py-8">
-            <XCircle className="w-8 h-8 text-rose-500 mx-auto mb-2" />
-            <h4 className="text-sm font-semibold text-white mb-1">
+            <XCircle className="w-8 h-8 text-[var(--status-error)] mx-auto mb-2" />
+            <h4 className="text-sm font-semibold text-[var(--text-primary)] font-serif mb-1">
               Replica Set Not Reachable
             </h4>
-            <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
+            <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
               Could not connect to MongoDB nodes at 127.0.0.1:27018-27020. Please verify that the replica set
               daemon is running in the background.
             </p>
@@ -135,15 +135,15 @@ export const ReplicationPage: React.FC = () => {
                   <div
                     className={`node-role ${
                       isPrimary
-                        ? 'text-emerald-400'
+                        ? 'text-[var(--status-success)] font-bold'
                         : isHealthy
-                        ? 'text-blue-400'
-                        : 'text-rose-400'
+                        ? 'text-[var(--accent-primary)] font-bold'
+                        : 'text-[var(--status-error)] font-bold'
                     }`}
                   >
                     {node.state}
                   </div>
-                  <div className="text-base font-bold text-white font-mono mb-1">
+                  <div className="text-base font-bold text-[var(--text-primary)] font-mono mb-1">
                     {node.name}
                   </div>
                   <div className="text-xs text-[var(--text-muted)] mb-3">
@@ -152,27 +152,27 @@ export const ReplicationPage: React.FC = () => {
 
                   <div className="p-2.5 bg-[var(--bg-primary)] rounded border border-[var(--border)] text-left text-xs space-y-1.5 font-mono">
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Health:</span>
+                      <span className="text-[var(--text-secondary)]">Health:</span>
                       <span
                         className={
                           isHealthy
-                            ? 'text-emerald-400 font-semibold'
-                            : 'text-rose-400 font-semibold'
+                            ? 'text-[var(--status-success)] font-semibold'
+                            : 'text-[var(--status-error)] font-semibold'
                         }
                       >
                         {node.health}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Uptime:</span>
-                      <span className="text-slate-300">
+                      <span className="text-[var(--text-secondary)]">Uptime:</span>
+                      <span className="text-[var(--text-primary)]">
                         {Math.floor(node.uptime / 60)}m {node.uptime % 60}s
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Oplog TS:</span>
+                      <span className="text-[var(--text-secondary)]">Oplog TS:</span>
                       <span
-                        className="text-cyan-400 truncate max-w-[120px]"
+                        className="text-[var(--accent-primary)] truncate max-w-[120px] font-bold"
                         title={node.optime}
                       >
                         {node.optime}
@@ -180,8 +180,8 @@ export const ReplicationPage: React.FC = () => {
                     </div>
                     {node.syncSourceHost && (
                       <div className="flex justify-between">
-                        <span className="text-[var(--text-muted)]">Syncing:</span>
-                        <span className="text-slate-300">
+                        <span className="text-[var(--text-secondary)]">Syncing:</span>
+                        <span className="text-[var(--text-primary)]">
                           {node.syncSourceHost}
                         </span>
                       </div>
@@ -197,8 +197,8 @@ export const ReplicationPage: React.FC = () => {
       {/* Live Experiment Results Panel */}
       <div className="card">
         <div className="card-header">
-          <span className="card-title flex items-center gap-2">
-            <Radio className="w-4 h-4 text-cyan-400" />
+          <span className="card-title flex items-center gap-2 font-serif">
+            <Radio className="w-4 h-4 text-[var(--accent-primary)]" />
             Live Replication Experiment Timeline
           </span>
           {experimentResult?.completedAt && (
@@ -211,22 +211,22 @@ export const ReplicationPage: React.FC = () => {
         {running ? (
           <div className="py-12 text-center text-xs text-[var(--text-muted)]">
             <div className="loading-spinner mb-3" />
-            <div className="text-white font-semibold mb-1">
+            <div className="text-[var(--text-primary)] font-serif font-semibold mb-1">
               Executing Experiment Pipeline...
             </div>
-            <p>
+            <p className="text-[var(--text-secondary)]">
               Inserting document on primary node & probing replica direct connections.
             </p>
           </div>
         ) : errorMsg ? (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded text-xs text-rose-400">
+          <div className="p-4 bg-[var(--status-error)]/10 border border-[var(--status-error)]/30 rounded text-xs text-[var(--status-error)]">
             <strong>Experiment Failed:</strong> {errorMsg}
           </div>
         ) : !experimentResult ? (
           <div className="empty-state">
             <Play className="w-10 h-10 mx-auto" />
-            <p className="font-semibold text-white">No Experiment Run Yet</p>
-            <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mt-1 mb-4">
+            <p className="font-semibold text-[var(--text-primary)] font-serif">No Experiment Run Yet</p>
+            <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto mt-1 mb-4">
               Click &quot;Run Replication Test&quot; above to insert a unique document on the primary node and verify
               synchronous replication across all 3 standalone member instances.
             </p>
@@ -247,7 +247,7 @@ export const ReplicationPage: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-white">
+                    <h4 className="text-sm font-semibold text-[var(--text-primary)] font-serif">
                       Step {st.step}: {st.title}
                     </h4>
                     <span
@@ -262,8 +262,8 @@ export const ReplicationPage: React.FC = () => {
                   {/* Step 2 Insert details */}
                   {st.step === 2 && (
                     <div className="mt-2 text-xs font-mono text-[var(--text-secondary)] space-y-1">
-                      <div>Generated Doc ID: <span className="text-cyan-400">{st.testId}</span></div>
-                      <div>Primary Write Latency: <span className="text-emerald-400 font-bold">{st.writeLatencyMs} ms</span></div>
+                      <div>Generated Doc ID: <span className="text-[var(--accent-primary)] font-bold">{st.testId}</span></div>
+                      <div>Primary Write Latency: <span className="text-[var(--status-success)] font-bold">{st.writeLatencyMs} ms</span></div>
                     </div>
                   )}
 
@@ -283,7 +283,7 @@ export const ReplicationPage: React.FC = () => {
                         <tbody>
                           {st.nodes.map((n: any, idx: number) => (
                             <tr key={idx}>
-                              <td className="font-semibold text-white">{n.node}</td>
+                              <td className="font-semibold text-[var(--text-primary)]">{n.node}</td>
                               <td className="font-mono text-xs">{n.port}</td>
                               <td>
                                 <span
@@ -307,7 +307,7 @@ export const ReplicationPage: React.FC = () => {
                                   {n.syncStatus}
                                 </span>
                               </td>
-                              <td className="font-mono text-xs text-slate-300">
+                              <td className="font-mono text-xs text-[var(--text-secondary)]">
                                 {n.readLatencyMs ? `${n.readLatencyMs} ms` : '—'}
                               </td>
                             </tr>
@@ -332,9 +332,9 @@ export const ReplicationPage: React.FC = () => {
                         <tbody>
                           {st.updateResults.map((u: any, idx: number) => (
                             <tr key={idx}>
-                              <td className="font-semibold text-white">{u.node}</td>
+                              <td className="font-semibold text-[var(--text-primary)]">{u.node}</td>
                               <td className="font-mono text-xs">{u.port}</td>
-                              <td className="font-mono text-xs text-cyan-400">
+                              <td className="font-mono text-xs text-[var(--accent-primary)] font-bold">
                                 {u.availableCopies !== null ? u.availableCopies : '—'}
                               </td>
                               <td>
@@ -361,7 +361,7 @@ export const ReplicationPage: React.FC = () => {
 
       {/* Distributed Concept Card */}
       <div className="info-panel">
-        <h4>Understanding MongoDB Asynchronous Oplog Replication</h4>
+        <h4 className="font-serif text-[var(--accent-primary)]">Understanding MongoDB Asynchronous Oplog Replication</h4>
         <p>
           MongoDB replication uses an internal capped collection named <code>local.oplog.rs</code>. When a write executes on the
           Primary node, it is committed locally and written to the oplog. Secondary nodes continuously tail the Primary&apos;s oplog and

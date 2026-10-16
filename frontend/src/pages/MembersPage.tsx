@@ -246,10 +246,10 @@ export const MembersPage: React.FC = () => {
               <tbody>
                 {members.map((m) => (
                   <tr key={m.memberId}>
-                    <td className="font-mono text-xs font-semibold text-cyan-400">
+                    <td className="font-mono text-xs font-semibold text-[var(--accent-primary)]">
                       {m.memberId}
                     </td>
-                    <td className="font-medium text-white">{m.name}</td>
+                    <td className="font-medium text-[var(--text-primary)] font-serif">{m.name}</td>
                     <td>
                       <span className="badge badge-purple">{m.department}</span>
                     </td>
@@ -268,7 +268,7 @@ export const MembersPage: React.FC = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="text-xs text-slate-400">
+                    <td className="text-xs text-[var(--text-secondary)]">
                       {m.registeredAt
                         ? new Date(m.registeredAt).toLocaleDateString()
                         : '—'}
@@ -276,7 +276,7 @@ export const MembersPage: React.FC = () => {
                     <td className="text-right space-x-1.5 whitespace-nowrap">
                       <button
                         onClick={() => openIssueForMember(m)}
-                        className="btn btn-sm border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10"
+                        className="btn btn-sm border-[var(--accent-primary)]/40 text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10"
                         title="Issue Book to this Member"
                       >
                         <Send className="w-3 h-3 mr-1" />
@@ -398,7 +398,7 @@ export const MembersPage: React.FC = () => {
         >
           <div className="modal max-w-xl" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-title flex items-center justify-between">
-              <span>{selectedMember.name}</span>
+              <span className="font-serif">{selectedMember.name}</span>
               <span className="badge badge-purple font-mono">
                 {selectedMember.memberId}
               </span>
@@ -406,20 +406,20 @@ export const MembersPage: React.FC = () => {
 
             <div className="p-3 bg-[var(--bg-primary)] rounded border border-[var(--border)] text-xs mb-4 flex justify-between">
               <div>
-                <span className="text-[var(--text-muted)]">Department:</span>
-                <span className="ml-2 font-semibold text-white">
+                <span className="text-[var(--text-secondary)]">Department:</span>
+                <span className="ml-2 font-semibold text-[var(--text-primary)]">
                   {selectedMember.department}
                 </span>
               </div>
               <div>
-                <span className="text-[var(--text-muted)]">Active Borrowed:</span>
-                <span className="ml-2 font-semibold text-amber-400">
+                <span className="text-[var(--text-secondary)]">Active Borrowed:</span>
+                <span className="ml-2 font-semibold text-[var(--accent-gold)]">
                   {selectedMember.activeIssues || 0} books
                 </span>
               </div>
             </div>
 
-            <h4 className="font-semibold text-xs text-white mb-2">
+            <h4 className="font-semibold text-xs text-[var(--text-primary)] font-serif mb-2">
               Circulation History ({selectedMember.history?.length || 0})
             </h4>
 
@@ -431,10 +431,10 @@ export const MembersPage: React.FC = () => {
                     className="p-2.5 bg-[var(--bg-primary)] border border-[var(--border)] rounded flex items-center justify-between text-xs"
                   >
                     <div>
-                      <div className="font-mono font-bold text-cyan-400">
+                      <div className="font-mono font-bold text-[var(--accent-primary)]">
                         {t.bookId}
                       </div>
-                      <div className="text-[11px] text-[var(--text-muted)]">
+                      <div className="text-[11px] text-[var(--text-secondary)]">
                         Issued: {new Date(t.issueDate).toLocaleDateString()}
                         {t.returnDate &&
                           ` • Returned: ${new Date(t.returnDate).toLocaleDateString()}`}
@@ -452,7 +452,7 @@ export const MembersPage: React.FC = () => {
                         <button
                           disabled={submitting}
                           onClick={() => handleMemberReturn(t.transactionId)}
-                          className="btn btn-sm border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 py-1 text-[11px]"
+                          className="btn btn-sm border-[var(--status-success)]/40 text-[var(--status-success)] hover:bg-[var(--status-success)]/10 py-1 text-[11px]"
                         >
                           <RotateCcw className="w-3 h-3 mr-1" />
                           Return
@@ -463,14 +463,14 @@ export const MembersPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[var(--text-muted)] py-4 text-center">
+              <p className="text-xs text-[var(--text-secondary)] py-4 text-center">
                 No circulation history found for this member.
               </p>
             )}
 
             <div className="modal-actions mt-4">
               <button
-                className="btn btn-sm border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10"
+                className="btn btn-sm border-[var(--accent-primary)]/40 text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10"
                 onClick={() => {
                   setDetailModalOpen(false);
                   openIssueForMember(selectedMember);
@@ -495,14 +495,14 @@ export const MembersPage: React.FC = () => {
         <div className="modal-overlay" onClick={() => setIssueModalOpen(false)}>
           <div className="modal max-w-md" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-title flex items-center justify-between">
-              <span>Issue Book to Member</span>
+              <span className="font-serif">Issue Book to Member</span>
               <span className="badge badge-purple font-mono">{selectedMember.memberId}</span>
             </h3>
 
             <div className="p-3 bg-[var(--bg-primary)] rounded border border-[var(--border)] text-xs mb-4 space-y-1">
-              <div className="font-semibold text-white">{selectedMember.name}</div>
-              <div className="text-[var(--text-muted)]">{selectedMember.department}</div>
-              <div className="text-amber-400 font-mono mt-1">
+              <div className="font-semibold text-[var(--text-primary)] font-serif">{selectedMember.name}</div>
+              <div className="text-[var(--text-secondary)]">{selectedMember.department}</div>
+              <div className="text-[var(--accent-gold)] font-mono mt-1 font-medium">
                 Current active loans: {selectedMember.activeIssues || 0} of 5 quota
               </div>
             </div>

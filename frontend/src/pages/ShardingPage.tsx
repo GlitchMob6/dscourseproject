@@ -25,7 +25,7 @@ import type { ShardingStatus } from '../types';
 import { apiGet } from '../api';
 import { useToast } from '../context/ToastContext';
 
-const SHARD_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+const SHARD_COLORS = ['#6B3218', '#C9A447', '#986039', '#2E4B65', '#24522A'];
 
 export const ShardingPage: React.FC = () => {
   const [status, setStatus] = useState<ShardingStatus | null>(null);
@@ -83,11 +83,11 @@ export const ShardingPage: React.FC = () => {
         </div>
       ) : !status?.connected ? (
         <div className="card text-center py-10">
-          <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-2" />
-          <h3 className="text-sm font-semibold text-white mb-1">
+          <AlertCircle className="w-10 h-10 text-[var(--status-error)] mx-auto mb-2" />
+          <h3 className="text-sm font-semibold text-[var(--text-primary)] font-serif mb-1">
             mongos Router Not Connected
           </h3>
-          <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
+          <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
             Unable to connect to the mongos query router at <code>mongodb://127.0.0.1:27050</code>.
             Please ensure your sharded cluster services (mongos, config replica set, and shard replica sets) are active.
           </p>
@@ -98,19 +98,19 @@ export const ShardingPage: React.FC = () => {
           <div className="grid-3">
             <div className="card">
               <div className="card-header">
-                <span className="card-title">Cluster Router</span>
-                <Network className="w-4 h-4 text-cyan-400" />
+                <span className="card-title font-serif">Cluster Router</span>
+                <Network className="w-4 h-4 text-[var(--accent-primary)]" />
               </div>
-              <div className="stat-value text-cyan-400">mongos</div>
+              <div className="stat-value text-[var(--accent-primary)] font-mono">mongos</div>
               <div className="stat-label">Port 27050 (isdbgrid: Active)</div>
             </div>
 
             <div className="card">
               <div className="card-header">
-                <span className="card-title">Registered Shards</span>
-                <HardDrive className="w-4 h-4 text-emerald-400" />
+                <span className="card-title font-serif">Registered Shards</span>
+                <HardDrive className="w-4 h-4 text-[var(--status-success)]" />
               </div>
-              <div className="stat-value text-emerald-400">
+              <div className="stat-value text-[var(--status-success)]">
                 {status.shards?.length || 0}
               </div>
               <div className="stat-label">Active horizontal storage nodes</div>
@@ -118,10 +118,10 @@ export const ShardingPage: React.FC = () => {
 
             <div className="card">
               <div className="card-header">
-                <span className="card-title">Total Sharded Books</span>
-                <Database className="w-4 h-4 text-purple-400" />
+                <span className="card-title font-serif">Total Sharded Books</span>
+                <Database className="w-4 h-4 text-[var(--accent-copper)]" />
               </div>
-              <div className="stat-value text-purple-400">
+              <div className="stat-value text-[var(--accent-copper)]">
                 {status.totalBooks ?? '—'}
               </div>
               <div className="stat-label">Indexed in library_db.books</div>
@@ -131,8 +131,8 @@ export const ShardingPage: React.FC = () => {
           {/* Shard Topology List */}
           <div className="card">
             <div className="card-header">
-              <span className="card-title flex items-center gap-2">
-                <HardDrive className="w-4 h-4 text-cyan-400" />
+              <span className="card-title flex items-center gap-2 font-serif">
+                <HardDrive className="w-4 h-4 text-[var(--accent-primary)]" />
                 Cluster Shard Members
               </span>
             </div>
@@ -145,7 +145,7 @@ export const ShardingPage: React.FC = () => {
                     className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded flex items-center justify-between"
                   >
                     <div>
-                      <div className="font-bold text-white flex items-center gap-2">
+                      <div className="font-bold text-[var(--text-primary)] flex items-center gap-2 font-serif">
                         <span
                           className="w-2.5 h-2.5 rounded-full"
                           style={{
@@ -155,7 +155,7 @@ export const ShardingPage: React.FC = () => {
                         />
                         {sh.id}
                       </div>
-                      <div className="text-xs font-mono text-slate-400 mt-1">
+                      <div className="text-xs font-mono text-[var(--text-secondary)] mt-1">
                         Host: {sh.host}
                       </div>
                     </div>
@@ -173,8 +173,8 @@ export const ShardingPage: React.FC = () => {
             {/* Pie Chart */}
             <div className="card">
               <div className="card-header">
-                <span className="card-title flex items-center gap-2">
-                  <PieIcon className="w-4 h-4 text-emerald-400" />
+                <span className="card-title flex items-center gap-2 font-serif">
+                  <PieIcon className="w-4 h-4 text-[var(--status-success)]" />
                   Document Distribution Ratio
                 </span>
               </div>
@@ -204,10 +204,12 @@ export const ShardingPage: React.FC = () => {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#1c1f2e',
-                          borderColor: '#2a2e3f',
+                          backgroundColor: '#FAF4E9',
+                          borderColor: '#A9784D',
                           borderRadius: 8,
                           fontSize: 12,
+                          color: '#2C1B12',
+                          boxShadow: '0 4px 12px rgba(44, 27, 18, 0.15)',
                         }}
                       />
                     </PieChart>
@@ -223,8 +225,8 @@ export const ShardingPage: React.FC = () => {
             {/* Bar Chart by count and size */}
             <div className="card">
               <div className="card-header">
-                <span className="card-title flex items-center gap-2">
-                  <BarChart2 className="w-4 h-4 text-cyan-400" />
+                <span className="card-title flex items-center gap-2 font-serif">
+                  <BarChart2 className="w-4 h-4 text-[var(--accent-primary)]" />
                   Document Count per Shard
                 </span>
               </div>
@@ -236,18 +238,20 @@ export const ShardingPage: React.FC = () => {
                       data={distributionData}
                       margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3f" />
-                      <XAxis dataKey="name" stroke="#8b8fa3" fontSize={11} />
-                      <YAxis stroke="#8b8fa3" fontSize={11} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#D8BFA4" />
+                      <XAxis dataKey="name" stroke="#705641" fontSize={11} />
+                      <YAxis stroke="#705641" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#1c1f2e',
-                          borderColor: '#2a2e3f',
+                          backgroundColor: '#FAF4E9',
+                          borderColor: '#A9784D',
                           borderRadius: 8,
                           fontSize: 12,
+                          color: '#2C1B12',
+                          boxShadow: '0 4px 12px rgba(44, 27, 18, 0.15)',
                         }}
                       />
-                      <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Documents" />
+                      <Bar dataKey="value" fill="#6B3218" radius={[4, 4, 0, 0]} name="Documents" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -262,27 +266,27 @@ export const ShardingPage: React.FC = () => {
           {/* Collection Sharding Metadata */}
           <div className="card">
             <div className="card-header">
-              <span className="card-title flex items-center gap-2">
-                <Layers className="w-4 h-4 text-purple-400" />
+              <span className="card-title flex items-center gap-2 font-serif">
+                <Layers className="w-4 h-4 text-[var(--accent-copper)]" />
                 Collection Sharding Configuration
               </span>
             </div>
 
             <div className="grid-2 text-xs">
               <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded space-y-1">
-                <div className="text-[var(--text-muted)] uppercase font-semibold">
+                <div className="text-[var(--text-secondary)] uppercase font-semibold">
                   Target Namespace
                 </div>
-                <div className="text-white font-mono font-bold">
+                <div className="text-[var(--text-primary)] font-mono font-bold">
                   library_db.books
                 </div>
               </div>
 
               <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded space-y-1">
-                <div className="text-[var(--text-muted)] uppercase font-semibold">
+                <div className="text-[var(--text-secondary)] uppercase font-semibold">
                   Compound Shard Key
                 </div>
-                <div className="text-cyan-400 font-mono font-bold">
+                <div className="text-[var(--accent-primary)] font-mono font-bold">
                   {status.collection?.shardKey
                     ? JSON.stringify(status.collection.shardKey)
                     : '{ category: 1, bookId: 1 }'}
@@ -295,7 +299,7 @@ export const ShardingPage: React.FC = () => {
           {status.chunks && status.chunks.length > 0 && (
             <div className="card">
               <div className="card-header">
-                <span className="card-title">
+                <span className="card-title font-serif">
                   Config Chunks Mapping ({status.chunks.length} Sample Chunks)
                 </span>
               </div>
@@ -312,13 +316,13 @@ export const ShardingPage: React.FC = () => {
                   <tbody>
                     {status.chunks.map((chk, idx) => (
                       <tr key={idx}>
-                        <td className="font-semibold text-white font-mono">
+                        <td className="font-semibold text-[var(--text-primary)] font-mono">
                           {chk.shard}
                         </td>
-                        <td className="font-mono text-xs text-cyan-400 truncate max-w-xs">
+                        <td className="font-mono text-xs text-[var(--accent-primary)] truncate max-w-xs">
                           {chk.min}
                         </td>
-                        <td className="font-mono text-xs text-emerald-400 truncate max-w-xs">
+                        <td className="font-mono text-xs text-[var(--status-success)] truncate max-w-xs">
                           {chk.max}
                         </td>
                       </tr>
@@ -333,7 +337,7 @@ export const ShardingPage: React.FC = () => {
 
       {/* Distributed Concept Guide */}
       <div className="info-panel">
-        <h4>Compound Shard Key Selection Rationale</h4>
+        <h4 className="font-serif text-[var(--accent-primary)]">Compound Shard Key Selection Rationale</h4>
         <p>
           Selecting a shard key requires balancing <strong>write distribution</strong> against <strong>query targeting</strong>.
           A low-cardinality prefix like <code>category</code> groups related books on the same shard for fast range queries, while

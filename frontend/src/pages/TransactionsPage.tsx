@@ -109,7 +109,7 @@ export const TransactionsPage: React.FC = () => {
         {/* Issue Card */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-cyan-400">
+            <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif">
               <ArrowUpRight className="w-4 h-4" />
               Issue Book (Checkout)
             </span>
@@ -156,7 +156,7 @@ export const TransactionsPage: React.FC = () => {
         {/* Return Card */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-emerald-400">
+            <span className="card-title flex items-center gap-2 text-[var(--status-success)] font-serif">
               <ArrowDownLeft className="w-4 h-4" />
               Return Book (Check-in)
             </span>
@@ -187,7 +187,7 @@ export const TransactionsPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={returning}
-                className="btn w-full justify-center border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                className="btn w-full justify-center border-[var(--status-success)]/40 text-[var(--status-success)] hover:bg-[var(--status-success)]/10"
               >
                 {returning ? 'Processing Return...' : 'Confirm Book Return'}
               </button>
@@ -199,8 +199,8 @@ export const TransactionsPage: React.FC = () => {
       {/* Transaction History Card */}
       <div className="card">
         <div className="card-header">
-          <span className="card-title flex items-center gap-2">
-            <Repeat className="w-4 h-4 text-cyan-400" />
+          <span className="card-title flex items-center gap-2 font-serif">
+            <Repeat className="w-4 h-4 text-[var(--accent-primary)]" />
             Audit Ledger ({filteredTxns.length} Records)
           </span>
 
@@ -260,11 +260,11 @@ export const TransactionsPage: React.FC = () => {
 
                   return (
                     <tr key={t.transactionId}>
-                      <td className="font-mono text-xs font-semibold text-cyan-400">
+                      <td className="font-mono text-xs font-semibold text-[var(--accent-primary)]">
                         {t.transactionId}
                       </td>
                       <td>
-                        <div className="font-medium text-white max-w-[200px] truncate">
+                        <div className="font-medium text-[var(--text-primary)] font-serif max-w-[200px] truncate">
                           {(t as any).bookTitle || t.bookId}
                         </div>
                         <div className="text-[11px] font-mono text-[var(--text-muted)]">
@@ -272,14 +272,14 @@ export const TransactionsPage: React.FC = () => {
                         </div>
                       </td>
                       <td>
-                        <div className="text-slate-200">
+                        <div className="text-[var(--text-primary)]">
                           {(t as any).memberName || t.memberId}
                         </div>
                         <div className="text-[11px] font-mono text-[var(--text-muted)]">
                           {t.memberId}
                         </div>
                       </td>
-                      <td className="text-xs text-slate-300">
+                      <td className="text-xs text-[var(--text-secondary)]">
                         {new Date(t.issueDate).toLocaleDateString(undefined, {
                           month: 'short',
                           day: 'numeric',
@@ -291,24 +291,24 @@ export const TransactionsPage: React.FC = () => {
                       </td>
                       <td className="text-xs">
                         {t.status === 'RETURNED' && t.returnDate ? (
-                          <div className="text-slate-300">
+                          <div className="text-[var(--text-secondary)]">
                             {new Date(t.returnDate).toLocaleDateString(undefined, {
                               month: 'short',
                               day: 'numeric',
                               year: 'numeric',
                             })}
-                            <div className="text-[10px] text-emerald-400/80">Returned in good standing</div>
+                            <div className="text-[10px] text-[var(--status-success)] font-medium">Returned in good standing</div>
                           </div>
                         ) : (
                           <div>
-                            <span className={isOverdue ? 'text-rose-400 font-semibold' : 'text-slate-300'}>
+                            <span className={isOverdue ? 'text-[var(--status-error)] font-semibold' : 'text-[var(--text-secondary)]'}>
                               {dueDate.toLocaleDateString(undefined, {
                                 month: 'short',
                                 day: 'numeric',
                                 year: 'numeric',
                               })}
                             </span>
-                            <div className={`text-[10px] ${isOverdue ? 'text-rose-400 font-bold' : 'text-[var(--text-muted)]'}`}>
+                            <div className={`text-[10px] ${isOverdue ? 'text-[var(--status-error)] font-bold' : 'text-[var(--text-muted)]'}`}>
                               {isOverdue ? '⚠ Overdue (14-day loan)' : '14-day loan standard'}
                             </div>
                           </div>
@@ -344,7 +344,7 @@ export const TransactionsPage: React.FC = () => {
                               setReturning(false);
                             }
                           }}
-                          className="btn btn-sm border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                          className="btn btn-sm border-[var(--status-success)]/40 text-[var(--status-success)] hover:bg-[var(--status-success)]/10"
                         >
                           Quick Return
                         </button>
@@ -361,9 +361,9 @@ export const TransactionsPage: React.FC = () => {
 
       {/* Architectural Guarantee Information */}
       <div className="info-panel flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+        <ShieldCheck className="w-5 h-5 text-[var(--accent-primary)] flex-shrink-0 mt-0.5" />
         <div>
-          <h4>Concurrency & Atomicity Guarantees</h4>
+          <h4 className="font-serif text-[var(--accent-primary)]">Concurrency & Atomicity Guarantees</h4>
           <p>
             In MongoDB, single-document updates are strictly atomic. The library service uses conditional filters{' '}
             <code>{`{ "bookId": id, "availableCopies": { "$gt": 0 } }`}</code> paired with{' '}

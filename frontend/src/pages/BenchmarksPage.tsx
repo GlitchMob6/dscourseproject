@@ -164,7 +164,7 @@ export const BenchmarksPage: React.FC = () => {
         {/* Synthetic Dataset Generator */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-cyan-400">
+            <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif">
               <Database className="w-4 h-4" />
               Dataset Generator (Seed: 42)
             </span>
@@ -216,7 +216,7 @@ export const BenchmarksPage: React.FC = () => {
         {/* Benchmark Test Runner */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-emerald-400">
+            <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif">
               <Gauge className="w-4 h-4" />
               Cross-Architecture Benchmark Suite
             </span>
@@ -269,7 +269,7 @@ export const BenchmarksPage: React.FC = () => {
             <button
               type="submit"
               disabled={running}
-              className="btn btn-primary w-full justify-center bg-emerald-600 hover:bg-emerald-500 border-emerald-600"
+              className="btn btn-primary w-full justify-center"
             >
               <Play className="w-4 h-4" />
               <span>{running ? 'Running Benchmark Suite...' : 'Start Comparative Benchmark'}</span>
@@ -282,10 +282,10 @@ export const BenchmarksPage: React.FC = () => {
       {running && (
         <div className="card py-16 text-center text-xs text-[var(--text-muted)]">
           <div className="loading-spinner mb-3" />
-          <div className="text-white text-sm font-semibold mb-1">
+          <div className="text-[var(--text-primary)] text-sm font-semibold font-serif mb-1">
             Executing Benchmark Across Architectures...
           </div>
-          <p>
+          <p className="text-[var(--text-secondary)]">
             Running bulk inserts, point index lookups, and range scans in isolated <code>benchmark_db</code> instances.
           </p>
         </div>
@@ -297,8 +297,8 @@ export const BenchmarksPage: React.FC = () => {
           {/* Comparative Metrics Table */}
           <div className="card">
             <div className="card-header">
-              <span className="card-title flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="card-title flex items-center gap-2 font-serif">
+                <CheckCircle2 className="w-4 h-4 text-[var(--status-success)]" />
                 Comparative Performance Metrics ({benchmarkResult.datasetSize} Docs)
               </span>
               <span className="text-xs text-[var(--text-muted)] font-mono">
@@ -324,7 +324,7 @@ export const BenchmarksPage: React.FC = () => {
                     const isSuccess = r.status === 'COMPLETED';
                     return (
                       <tr key={idx}>
-                        <td className="font-semibold text-white">
+                        <td className="font-semibold text-[var(--text-primary)] font-serif">
                           {r.architecture}
                         </td>
                         <td>
@@ -339,16 +339,16 @@ export const BenchmarksPage: React.FC = () => {
                         <td className="font-mono text-xs">
                           {isSuccess ? `${r.insertTimeSec}s` : '—'}
                         </td>
-                        <td className="font-mono text-xs font-bold text-cyan-400">
+                        <td className="font-mono text-xs font-bold text-[var(--accent-primary)]">
                           {isSuccess ? `${r.throughputDocsPerSec} docs/s` : '—'}
                         </td>
                         <td className="font-mono text-xs">
                           {isSuccess ? `${r.avgInsertLatencyMs} ms` : '—'}
                         </td>
-                        <td className="font-mono text-xs font-semibold text-emerald-400">
+                        <td className="font-mono text-xs font-semibold text-[var(--status-success)]">
                           {isSuccess ? `${r.pointQueryLatencyMs} ms` : '—'}
                         </td>
-                        <td className="font-mono text-xs font-semibold text-amber-400">
+                        <td className="font-mono text-xs font-semibold text-[var(--accent-gold)]">
                           {isSuccess ? `${r.rangeQueryLatencyMs} ms` : '—'}
                         </td>
                       </tr>
@@ -364,8 +364,8 @@ export const BenchmarksPage: React.FC = () => {
             {/* Throughput Bar Chart */}
             <div className="card">
               <div className="card-header">
-                <span className="card-title flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-cyan-400" />
+                <span className="card-title flex items-center gap-2 font-serif">
+                  <Zap className="w-4 h-4 text-[var(--accent-primary)]" />
                   Bulk Insert Throughput (Docs / Sec)
                 </span>
               </div>
@@ -377,20 +377,22 @@ export const BenchmarksPage: React.FC = () => {
                       data={throughputData}
                       margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3f" />
-                      <XAxis dataKey="name" stroke="#8b8fa3" fontSize={11} />
-                      <YAxis stroke="#8b8fa3" fontSize={11} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#D8BFA4" />
+                      <XAxis dataKey="name" stroke="#705641" fontSize={11} />
+                      <YAxis stroke="#705641" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#1c1f2e',
-                          borderColor: '#2a2e3f',
+                          backgroundColor: '#FAF4E9',
+                          borderColor: '#A9784D',
                           borderRadius: 8,
                           fontSize: 12,
+                          color: '#2C1B12',
+                          boxShadow: '0 4px 12px rgba(44, 27, 18, 0.15)',
                         }}
                       />
                       <Bar
                         dataKey="Throughput (docs/sec)"
-                        fill="#06b6d4"
+                        fill="#6B3218"
                         radius={[4, 4, 0, 0]}
                       />
                     </BarChart>
@@ -406,8 +408,8 @@ export const BenchmarksPage: React.FC = () => {
             {/* Query Latencies Comparison */}
             <div className="card">
               <div className="card-header">
-                <span className="card-title flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-purple-400" />
+                <span className="card-title flex items-center gap-2 font-serif">
+                  <Clock className="w-4 h-4 text-[var(--accent-copper)]" />
                   Query Latencies Comparison (ms)
                 </span>
               </div>
@@ -419,26 +421,28 @@ export const BenchmarksPage: React.FC = () => {
                       data={queryLatencyData}
                       margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3f" />
-                      <XAxis dataKey="name" stroke="#8b8fa3" fontSize={11} />
-                      <YAxis stroke="#8b8fa3" fontSize={11} unit="ms" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#D8BFA4" />
+                      <XAxis dataKey="name" stroke="#705641" fontSize={11} />
+                      <YAxis stroke="#705641" fontSize={11} unit="ms" />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#1c1f2e',
-                          borderColor: '#2a2e3f',
+                          backgroundColor: '#FAF4E9',
+                          borderColor: '#A9784D',
                           borderRadius: 8,
                           fontSize: 12,
+                          color: '#2C1B12',
+                          boxShadow: '0 4px 12px rgba(44, 27, 18, 0.15)',
                         }}
                       />
-                      <Legend wrapperStyle={{ fontSize: 11, paddingTop: 10 }} />
+                      <Legend wrapperStyle={{ fontSize: 11, paddingTop: 10, color: '#2C1B12' }} />
                       <Bar
                         dataKey="Point Query (ms)"
-                        fill="#10b981"
+                        fill="#C9A447"
                         radius={[4, 4, 0, 0]}
                       />
                       <Bar
                         dataKey="Range Query (ms)"
-                        fill="#f59e0b"
+                        fill="#986039"
                         radius={[4, 4, 0, 0]}
                       />
                     </BarChart>
@@ -456,7 +460,7 @@ export const BenchmarksPage: React.FC = () => {
 
       {/* Benchmark Analysis Guide */}
       <div className="info-panel">
-        <h4>Architectural Performance Insights</h4>
+        <h4 className="font-serif text-[var(--accent-primary)]">Architectural Performance Insights</h4>
         <p>
           <strong>Standalone</strong> exhibits the lowest single-node write latency due to zero replication overhead or routing proxy hops.{' '}
           <strong>Replica Set</strong> incurs small oplog sync overhead on writes, but enables linear read scaling across secondaries.{' '}
