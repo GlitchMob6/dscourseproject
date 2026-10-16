@@ -160,121 +160,129 @@ export const BenchmarksPage: React.FC = () => {
       </div>
 
       {/* Top 2 Action Cards: Synthetic Data Gen & Benchmark Controls */}
-      <div className="grid-2">
+      <div className="grid-2 gap-6 items-stretch">
         {/* Synthetic Dataset Generator */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif">
-              <Database className="w-4 h-4" />
-              Dataset Generator (Seed: 42)
-            </span>
-            <span className="badge badge-purple">Reproducible</span>
+        <div className="card p-7 flex flex-col justify-between">
+          <div>
+            <div className="card-header mb-5">
+              <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif text-sm">
+                <Database className="w-4 h-4" />
+                Dataset Generator (Seed: 42)
+              </span>
+              <span className="badge badge-purple px-2.5 py-1 text-xs">Reproducible</span>
+            </div>
+
+            <form onSubmit={handleGenerateData} className="space-y-4">
+              <div className="form-group">
+                <label className="form-label mb-2">Number of Books to Generate</label>
+                <select
+                  className="form-input"
+                  value={genCount}
+                  onChange={(e) => setGenCount(Number(e.target.value))}
+                >
+                  <option value={100}>100 records (Quick smoke test)</option>
+                  <option value={500}>500 records (Standard benchmark)</option>
+                  <option value={1000}>1,000 records (Recommended)</option>
+                  <option value={2000}>2,000 records (Deep partition spread)</option>
+                  <option value={5000}>5,000 records (Stress test)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2.5 pt-1.5 pb-2">
+                <input
+                  type="checkbox"
+                  id="clearCheck"
+                  checked={clearExisting}
+                  onChange={(e) => setClearExisting(e.target.checked)}
+                  className="cursor-pointer"
+                />
+                <label
+                  htmlFor="clearCheck"
+                  className="text-xs text-[var(--text-secondary)] cursor-pointer select-none"
+                >
+                  Clear existing books collection before inserting
+                </label>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={generating}
+                  className="btn btn-primary w-full justify-center py-2.5"
+                >
+                  {generating ? 'Generating Books...' : 'Populate Active Database'}
+                </button>
+              </div>
+            </form>
           </div>
-
-          <form onSubmit={handleGenerateData} className="space-y-3">
-            <div className="form-group">
-              <label className="form-label">Number of Books to Generate</label>
-              <select
-                className="form-input"
-                value={genCount}
-                onChange={(e) => setGenCount(Number(e.target.value))}
-              >
-                <option value={100}>100 records (Quick smoke test)</option>
-                <option value={500}>500 records (Standard benchmark)</option>
-                <option value={1000}>1,000 records (Recommended)</option>
-                <option value={2000}>2,000 records (Deep partition spread)</option>
-                <option value={5000}>5,000 records (Stress test)</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2 pt-1 pb-2">
-              <input
-                type="checkbox"
-                id="clearCheck"
-                checked={clearExisting}
-                onChange={(e) => setClearExisting(e.target.checked)}
-                className="cursor-pointer"
-              />
-              <label
-                htmlFor="clearCheck"
-                className="text-xs text-[var(--text-secondary)] cursor-pointer"
-              >
-                Clear existing books collection before inserting
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={generating}
-              className="btn btn-primary w-full justify-center"
-            >
-              {generating ? 'Generating Books...' : 'Populate Active Database'}
-            </button>
-          </form>
         </div>
 
         {/* Benchmark Test Runner */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif">
-              <Gauge className="w-4 h-4" />
-              Cross-Architecture Benchmark Suite
-            </span>
-          </div>
-
-          <form onSubmit={handleRunBenchmark} className="space-y-3">
-            <div className="form-group">
-              <label className="form-label">Dataset Size for Benchmark</label>
-              <select
-                className="form-input"
-                value={datasetSize}
-                onChange={(e) => setDatasetSize(Number(e.target.value))}
-              >
-                <option value={250}>250 documents per environment</option>
-                <option value={500}>500 documents per environment</option>
-                <option value={1000}>1,000 documents per environment</option>
-              </select>
+        <div className="card p-7 flex flex-col justify-between">
+          <div>
+            <div className="card-header mb-5">
+              <span className="card-title flex items-center gap-2 text-[var(--accent-primary)] font-serif text-sm">
+                <Gauge className="w-4 h-4" />
+                Cross-Architecture Benchmark Suite
+              </span>
             </div>
 
-            <div className="space-y-1.5 pt-1 pb-2">
-              <label className="form-label">Select Architectures to Probe:</label>
-              <div className="flex flex-wrap gap-4 text-xs text-[var(--text-secondary)]">
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={testStandalone}
-                    onChange={(e) => setTestStandalone(e.target.checked)}
-                  />
-                  <span>Standalone (27017)</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={testReplicaSet}
-                    onChange={(e) => setTestReplicaSet(e.target.checked)}
-                  />
-                  <span>Replica Set (rs0)</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={testSharded}
-                    onChange={(e) => setTestSharded(e.target.checked)}
-                  />
-                  <span>Sharded Cluster (mongos)</span>
-                </label>
+            <form onSubmit={handleRunBenchmark} className="space-y-4">
+              <div className="form-group">
+                <label className="form-label mb-2">Dataset Size for Benchmark</label>
+                <select
+                  className="form-input"
+                  value={datasetSize}
+                  onChange={(e) => setDatasetSize(Number(e.target.value))}
+                >
+                  <option value={250}>250 documents per environment</option>
+                  <option value={500}>500 documents per environment</option>
+                  <option value={1000}>1,000 documents per environment</option>
+                </select>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={running}
-              className="btn btn-primary w-full justify-center"
-            >
-              <Play className="w-4 h-4" />
-              <span>{running ? 'Running Benchmark Suite...' : 'Start Comparative Benchmark'}</span>
-            </button>
-          </form>
+              <div className="space-y-2 pt-1.5 pb-2">
+                <label className="form-label mb-1">Select Architectures to Probe:</label>
+                <div className="flex flex-wrap gap-4 text-xs text-[var(--text-secondary)]">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={testStandalone}
+                      onChange={(e) => setTestStandalone(e.target.checked)}
+                    />
+                    <span>Standalone (27017)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={testReplicaSet}
+                      onChange={(e) => setTestReplicaSet(e.target.checked)}
+                    />
+                    <span>Replica Set (rs0)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={testSharded}
+                      onChange={(e) => setTestSharded(e.target.checked)}
+                    />
+                    <span>Sharded Cluster (mongos)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={running}
+                  className="btn btn-primary w-full justify-center py-2.5"
+                >
+                  <Play className="w-4 h-4" />
+                  <span>{running ? 'Running Benchmark Suite...' : 'Start Comparative Benchmark'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 

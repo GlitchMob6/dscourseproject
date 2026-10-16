@@ -91,77 +91,81 @@ export const OverviewPage: React.FC = () => {
       </div>
 
       {/* Active Cluster State Card & Quick Links */}
-      <div className="grid-3">
+      <div className="grid-3 gap-6 items-stretch">
         {/* Active Topology Overview */}
-        <div className="card col-span-2">
-          <div className="card-header">
-            <span className="card-title flex items-center gap-2">
-              <Server className="w-4 h-4 text-[var(--accent-primary)]" />
-              Active Database Topology
-            </span>
-            <span
-              className={`badge ${
-                health?.connected ? 'badge-green' : 'badge-red'
-              }`}
-            >
-              {health?.connected ? 'CONNECTED' : 'DISCONNECTED'}
-            </span>
-          </div>
+        <div className="card col-span-2 flex flex-col justify-between p-7">
+          <div>
+            <div className="card-header mb-5">
+              <span className="card-title flex items-center gap-2.5 font-serif text-sm">
+                <Server className="w-4 h-4 text-[var(--accent-primary)]" />
+                Active Database Topology
+              </span>
+              <span
+                className={`badge px-3 py-1 text-xs font-semibold ${
+                  health?.connected ? 'badge-green' : 'badge-red'
+                }`}
+              >
+                {health?.connected ? 'CONNECTED' : 'DISCONNECTED'}
+              </span>
+            </div>
 
-          <div className="grid-2 mb-4">
-            <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md space-y-1">
-              <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
-                Operating Mode
+            <div className="grid-2 gap-4 mb-5">
+              <div className="p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg space-y-1.5 shadow-xs">
+                <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
+                  Operating Mode
+                </div>
+                <div className="text-base font-bold text-[var(--accent-dark)] flex items-center gap-2">
+                  <span>{health?.mode || 'UNKNOWN'}</span>
+                  {health?.mode === 'REPLICA_SET' && (
+                    <span className="text-xs px-2.5 py-0.5 rounded bg-[var(--accent-green-bg)] text-[var(--accent-green)] border border-[var(--accent-green-border)] font-semibold">
+                      High Availability
+                    </span>
+                  )}
+                  {health?.mode === 'SHARDED' && (
+                    <span className="text-xs px-2.5 py-0.5 rounded bg-[var(--accent-blue-bg)] text-[var(--accent-blue)] border border-[var(--accent-blue-border)] font-semibold">
+                      Horizontal Scale
+                    </span>
+                  )}
+                  {health?.mode === 'STANDALONE' && (
+                    <span className="text-xs px-2.5 py-0.5 rounded bg-[var(--accent-yellow-bg)] text-[var(--accent-yellow)] border border-[var(--accent-yellow-border)] font-semibold">
+                      Baseline
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="text-base font-bold text-[var(--accent-dark)] flex items-center gap-2">
-                <span>{health?.mode || 'UNKNOWN'}</span>
-                {health?.mode === 'REPLICA_SET' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-green-bg)] text-[var(--accent-green)] border border-[var(--accent-green-border)] font-semibold">
-                    High Availability
-                  </span>
-                )}
-                {health?.mode === 'SHARDED' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-blue-bg)] text-[var(--accent-blue)] border border-[var(--accent-blue-border)] font-semibold">
-                    Horizontal Scale
-                  </span>
-                )}
-                {health?.mode === 'STANDALONE' && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-[var(--accent-yellow-bg)] text-[var(--accent-yellow)] border border-[var(--accent-yellow-border)] font-semibold">
-                    Baseline
-                  </span>
-                )}
+
+              <div className="p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg space-y-1.5 shadow-xs">
+                <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
+                  Primary Master / Router
+                </div>
+                <div className="text-sm font-mono text-[var(--accent-primary)] font-bold truncate">
+                  {health?.primary_host || health?.uri?.split('/')[2] || 'N/A'}
+                </div>
               </div>
             </div>
 
-            <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md space-y-1">
-              <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">
-                Primary Master / Router
+            {/* Connection URI info */}
+            <div className="p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg text-xs font-mono text-[var(--text-secondary)] mb-5 shadow-xs overflow-x-auto">
+              <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1.5">
+                Connection String
               </div>
-              <div className="text-sm font-mono text-[var(--accent-primary)] font-semibold truncate">
-                {health?.primary_host || health?.uri?.split('/')[2] || 'N/A'}
+              <div className="break-all leading-relaxed font-mono">
+                {health?.uri || 'Connecting to backend...'}
               </div>
             </div>
-          </div>
-
-          {/* Connection URI info */}
-          <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border)] rounded-md text-xs font-mono text-[var(--text-secondary)] mb-4 overflow-x-auto">
-            <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1">
-              Connection String
-            </div>
-            {health?.uri || 'Connecting to backend...'}
           </div>
 
           {/* Cluster Nodes list if RS */}
           {health?.hosts && health.hosts.length > 0 && (
-            <div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] mb-2">
-                Replica Set Members ({health.hosts.length} Nodes):
+            <div className="pt-2">
+              <div className="text-xs font-semibold text-[var(--text-secondary)] mb-2.5 font-serif flex items-center gap-2">
+                <span>Replica Set Members ({health.hosts.length} Nodes):</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {health.hosts.map((host, i) => (
                   <span
                     key={i}
-                    className={`px-2.5 py-1 text-xs rounded border font-mono ${
+                    className={`px-3 py-1.5 text-xs rounded-md border font-mono transition-all shadow-xs ${
                       host === health.primary_host
                         ? 'bg-[var(--accent-green-bg)] text-[var(--accent-green)] border-[var(--accent-green-border)] font-bold'
                         : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] border-[var(--border)]'
@@ -176,24 +180,24 @@ export const OverviewPage: React.FC = () => {
         </div>
 
         {/* Experiment Navigation Shortcuts */}
-        <div className="card flex flex-col justify-between">
+        <div className="card flex flex-col justify-between p-7">
           <div>
-            <div className="card-header">
-              <span className="card-title flex items-center gap-2">
+            <div className="card-header mb-3">
+              <span className="card-title flex items-center gap-2 font-serif text-sm">
                 <Layers className="w-4 h-4 text-[var(--accent-primary)]" />
                 Distributed Systems Labs
               </span>
             </div>
-            <p className="text-xs text-[var(--text-secondary)] mb-4">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-5">
               Explore hands-on experiments directly reflecting your project's Python test suites:
             </p>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Link
                 to="/replication"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-[var(--accent-green)]" />
                   <span>Replication Verification</span>
                 </div>
@@ -202,9 +206,9 @@ export const OverviewPage: React.FC = () => {
 
               <Link
                 to="/consistency"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <Activity className="w-4 h-4 text-[var(--accent-blue)]" />
                   <span>Write Concern & Read Prefs</span>
                 </div>
@@ -213,9 +217,9 @@ export const OverviewPage: React.FC = () => {
 
               <Link
                 to="/failover"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <HardDrive className="w-4 h-4 text-[var(--accent-red)]" />
                   <span>Failover & Leader Election</span>
                 </div>
@@ -224,9 +228,9 @@ export const OverviewPage: React.FC = () => {
 
               <Link
                 to="/sharding"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <HardDrive className="w-4 h-4 text-[var(--accent-primary)]" />
                   <span>Sharding & Chunk Balancing</span>
                 </div>
@@ -235,9 +239,9 @@ export const OverviewPage: React.FC = () => {
 
               <Link
                 to="/benchmarks"
-                className="flex items-center justify-between p-2.5 rounded bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <Zap className="w-4 h-4 text-[var(--accent-gold-dark)]" />
                   <span>Cross-Architecture Benchmarks</span>
                 </div>
@@ -246,7 +250,7 @@ export const OverviewPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-center text-[11px] text-[var(--text-muted)]">
+          <div className="mt-5 pt-3.5 border-t border-[var(--border)] flex justify-between items-center text-[11px] text-[var(--text-muted)]">
             <span>Library Service v1.0</span>
             <span className="text-[var(--accent-primary)] font-mono font-semibold">Academic UI</span>
           </div>
