@@ -46,9 +46,10 @@ def benchmark_architecture(name, uri, books_data):
         coll.create_index([("bookId", 1)], unique=True)
         coll.create_index([("category", 1)])
 
-        # 1. Bulk Insertion Benchmark
+        # 1. Bulk Insertion Benchmark (use fresh dict copies to prevent in-place _id mutation across environments)
         t_insert_start = time.perf_counter()
-        coll.insert_many(books_data, ordered=False)
+        fresh_books = [dict(b) for b in books_data]
+        coll.insert_many(fresh_books, ordered=False)
         insert_time_sec = time.perf_counter() - t_insert_start
         throughput = len(books_data) / insert_time_sec
         avg_insert_lat_ms = (insert_time_sec / len(books_data)) * 1000

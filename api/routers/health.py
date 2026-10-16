@@ -79,6 +79,7 @@ def check_all_connectivity():
     """Probe all three MongoDB topologies and report availability."""
     results = {}
     for label, uri in [("standalone", STANDALONE_URI), ("replica_set", REPLICA_SET_URI), ("sharded", SHARDED_CLUSTER_URI)]:
+        c = None
         try:
             c = MongoClient(uri, serverSelectionTimeoutMS=2000)
             c.admin.command("ping")
@@ -89,9 +90,14 @@ def check_all_connectivity():
                 "set_name": hello.get("setName", "N/A"),
                 "is_mongos": hello.get("msg") == "isdbgrid",
             }
-            c.close()
         except Exception as e:
             results[label] = {"available": False, "error": str(e)}
+        finally:
+            if c:
+                try:
+                    c.close()
+                except Exception:
+                    pass
     return results
 
 

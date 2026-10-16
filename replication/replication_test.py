@@ -71,9 +71,15 @@ def run_replication_experiment():
             node_hello = direct_client.admin.command('hello')
             role = "PRIMARY" if node_hello.get("isWritablePrimary") else ("SECONDARY" if node_hello.get("secondary") else "OTHER")
 
-            # Measure how fast document is visible on this node
+            # Poll for replication visibility up to 2.5 seconds to accurately measure oplog propagation delay
             t_check = time.perf_counter()
-            found = direct_client.library_db.books.find_one({"bookId": test_id}, {"_id": 0})
+            found = None
+            col = direct_client.library_db.get_collection("books", read_preference=ReadPreference.SECONDARY_PREFERRED)
+            while (time.perf_counter() - t_check) < 2.5:
+                found = col.find_one({"bookId": test_id}, {"_id": 0})
+                if found:
+                    break
+                time.sleep(0.02)
             lookup_latency = (time.perf_counter() - t_check) * 1000
 
             if found:
@@ -107,13 +113,19 @@ def run_replication_experiment():
     # Step 4: Perform Update on Primary and check propagation
     print(f"\n[*] [STEP 3] Updating availableCopies to 4 on Primary...")
     rs_client.library_db.books.update_one({"bookId": test_id}, {"$set": {"availableCopies": 4}})
-    time.sleep(0.1) # brief tick for asynchronous oplog replay
 
     update_checks = []
     for node in NODES:
         try:
-            dc = MongoClient(f"mongodb://{node['host']}:{node['port']}/?directConnection=true&serverSelectionTimeoutMS=1000")
-            doc = dc.library_db.books.find_one({"bookId": test_id}, {"_id": 0, "availableCopies": 1})
+            dc = MongoClient(f"mongodb://{node['host']}:{node['port']}/?directConnection=true&serverSelectionTimeoutMS=1500")
+            col = dc.library_db.get_collection("books", read_preference=ReadPreference.SECONDARY_PREFERRED)
+            doc = None
+            p_start = time.perf_counter()
+            while (time.perf_counter() - p_start) < 2.0:
+                doc = col.find_one({"bookId": test_id}, {"_id": 0, "availableCopies": 1})
+                if doc and doc.get("availableCopies") == 4:
+                    break
+                time.sleep(0.02)
             update_checks.append([node["name"], doc.get("availableCopies") if doc else "Missing"])
             dc.close()
         except Exception:

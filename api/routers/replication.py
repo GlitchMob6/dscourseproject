@@ -8,7 +8,7 @@ import uuid
 import threading
 from datetime import datetime
 from fastapi import APIRouter
-from pymongo import MongoClient
+from pymongo import MongoClient, ReadPreference
 from api.job_store import JobStore
 
 router = APIRouter()
@@ -118,9 +118,18 @@ def _execute_replication_experiment():
             dc = MongoClient(uri)
             nh = dc.admin.command("hello")
             role = "PRIMARY" if nh.get("isWritablePrimary") else ("SECONDARY" if nh.get("secondary") else "OTHER")
+
+            # Poll for replication visibility up to 2.5 seconds to measure actual propagation delay
             t_check = time.perf_counter()
-            found = dc.library_db.books.find_one({"bookId": test_id}, {"_id": 0})
+            found = None
+            col = dc.library_db.get_collection("books", read_preference=ReadPreference.SECONDARY_PREFERRED)
+            while (time.perf_counter() - t_check) < 2.5:
+                found = col.find_one({"bookId": test_id}, {"_id": 0})
+                if found:
+                    break
+                time.sleep(0.02)
             read_ms = (time.perf_counter() - t_check) * 1000
+
             node_results.append({
                 "node": node["name"],
                 "port": node["port"],
@@ -142,12 +151,18 @@ def _execute_replication_experiment():
 
     # Step 4: Update and verify propagation
     rs_client.library_db.books.update_one({"bookId": test_id}, {"$set": {"availableCopies": 4}})
-    time.sleep(0.15)
     update_checks = []
     for node in NODES:
         try:
             dc = MongoClient(f"mongodb://{node['host']}:{node['port']}/?directConnection=true&serverSelectionTimeoutMS=1500")
-            doc = dc.library_db.books.find_one({"bookId": test_id}, {"_id": 0, "availableCopies": 1})
+            col = dc.library_db.get_collection("books", read_preference=ReadPreference.SECONDARY_PREFERRED)
+            doc = None
+            p_start = time.perf_counter()
+            while (time.perf_counter() - p_start) < 2.0:
+                doc = col.find_one({"bookId": test_id}, {"_id": 0, "availableCopies": 1})
+                if doc and doc.get("availableCopies") == 4:
+                    break
+                time.sleep(0.02)
             update_checks.append({
                 "node": node["name"],
                 "port": node["port"],

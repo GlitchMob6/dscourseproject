@@ -6,10 +6,13 @@ Exposes cluster health and controlled failover/fault-tolerance experiments.
 import time
 import threading
 from datetime import datetime
+from pathlib import Path
 from fastapi import APIRouter
 from pydantic import BaseModel
 from pymongo import MongoClient
 from api.job_store import JobStore
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 router = APIRouter()
 
@@ -106,7 +109,7 @@ def _stop_node(port):
 
 
 def _restart_node(node_info):
-    """Restart a stopped mongod node."""
+    """Restart a stopped mongod node and verify readiness."""
     import subprocess
     import sys
     import glob
@@ -120,12 +123,17 @@ def _restart_node(node_info):
         m_find = shutil.which("mongod")
         mongod_path = m_find if m_find else "mongod.exe"
 
+    dbpath = str(PROJECT_ROOT / node_info["dbpath"])
+    logdir = PROJECT_ROOT / "data" / "logs"
+    logdir.mkdir(parents=True, exist_ok=True)
+    logpath = str(logdir / f"rs0_node_{node_info['port']}.log")
+
     cmd = [
         mongod_path,
         "--replSet", "rs0",
         "--port", str(node_info["port"]),
-        "--dbpath", node_info["dbpath"],
-        "--logpath", f"data\\logs\\rs0_node_{node_info['port']}.log",
+        "--dbpath", dbpath,
+        "--logpath", logpath,
         "--wiredTigerCacheSizeGB", "0.25",
         "--bind_ip", "127.0.0.1",
     ]
@@ -135,7 +143,17 @@ def _restart_node(node_info):
         if hasattr(subprocess, "DETACHED_PROCESS"):
             flags |= subprocess.DETACHED_PROCESS
     subprocess.Popen(cmd, creationflags=flags)
-    time.sleep(3)
+
+    # Wait up to 15 seconds for node to come online and respond to ping
+    poll_start = time.time()
+    while time.time() - poll_start < 15:
+        try:
+            probe = MongoClient(f"mongodb://127.0.0.1:{node_info['port']}/?directConnection=true", serverSelectionTimeoutMS=1000)
+            probe.admin.command("ping")
+            probe.close()
+            break
+        except Exception:
+            time.sleep(0.5)
 
 
 def _execute_fault_tolerance(target_port: int):

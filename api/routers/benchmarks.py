@@ -158,9 +158,10 @@ def _benchmark_one(name, uri, books_data):
         coll.create_index([("bookId", 1)], unique=True)
         coll.create_index([("category", 1)])
 
-        # Bulk insert
+        # Bulk insert (use fresh dict copies to prevent in-place _id mutation across environments)
         t0 = time.perf_counter()
-        coll.insert_many(books_data, ordered=False)
+        fresh_books = [dict(b) for b in books_data]
+        coll.insert_many(fresh_books, ordered=False)
         insert_sec = time.perf_counter() - t0
         throughput = len(books_data) / insert_sec
         avg_insert_ms = (insert_sec / len(books_data)) * 1000

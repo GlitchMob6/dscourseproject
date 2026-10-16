@@ -138,6 +138,8 @@ class LibraryService:
         if total_copies is not None:
             try:
                 new_total = int(total_copies)
+                if new_total <= 0:
+                    return False, "Error: Total copies must be a positive integer."
                 borrowed = existing["totalCopies"] - existing["availableCopies"]
                 if new_total < borrowed:
                     return False, f"Cannot reduce total to {new_total}. {borrowed} copies are currently borrowed."
@@ -165,8 +167,10 @@ class LibraryService:
             return False, f"Book ID '{book_id}' does not exist."
 
         borrowed = book.get("totalCopies", 0) - book.get("availableCopies", 0)
-        if borrowed > 0:
-            return False, f"Cannot delete book. {borrowed} copies are currently issued to members."
+        active_loans = self.db.transactions.count_documents({"bookId": str(book_id).strip(), "status": "ISSUED"})
+        if borrowed > 0 or active_loans > 0:
+            count = max(borrowed, active_loans)
+            return False, f"Cannot delete book. {count} copies are currently issued to members."
 
         try:
             self.db.books.delete_one({"bookId": str(book_id).strip()})
@@ -228,6 +232,15 @@ class LibraryService:
         if not member:
             return False, f"Error: Member ID '{member_id}' does not exist. Register member first."
 
+        # Check if member already has an active loan of this book
+        active_loan = self.db.transactions.find_one({
+            "bookId": book_id,
+            "memberId": member_id,
+            "status": "ISSUED"
+        })
+        if active_loan:
+            return False, f"Error: Member '{member.get('name')}' already has an active borrowed copy of this book (Txn: {active_loan.get('transactionId')})."
+
         # Atomically check availability and decrement availableCopies
         # $gt: 0 ensures no race condition can drop copies below zero
         updated_book = self.db.books.find_one_and_update(
@@ -255,7 +268,15 @@ class LibraryService:
             "returnDate": None,
             "status": "ISSUED"
         }
-        self.db.transactions.insert_one(txn_doc)
+        try:
+            self.db.transactions.insert_one(txn_doc)
+        except Exception as e:
+            # Rollback availability decrement if recording transaction fails
+            self.db.books.update_one(
+                {"bookId": book_id},
+                {"$inc": {"availableCopies": 1}}
+            )
+            return False, f"Transaction Error: Failed to record loan. Book availability restored. ({e})"
 
         return True, f"SUCCESS: Book '{updated_book.get('title')}' issued to {member.get('name')}.\nTransaction ID: {trans_id}"
 
@@ -279,12 +300,16 @@ class LibraryService:
         if not txn:
             return False, "Error: No active ISSUED transaction found for given details."
 
-        # Atomically mark transaction as RETURNED
+        # Atomically transition transaction status from ISSUED to RETURNED
         return_time = datetime.now().isoformat()
-        self.db.transactions.update_one(
-            {"_id": txn["_id"]},
-            {"$set": {"status": "RETURNED", "returnDate": return_time}}
+        updated_txn = self.db.transactions.find_one_and_update(
+            {"_id": txn["_id"], "status": "ISSUED"},
+            {"$set": {"status": "RETURNED", "returnDate": return_time}},
+            return_document=False
         )
+
+        if not updated_txn:
+            return False, "Error: Transaction was already returned or is no longer active."
 
         # Atomically restore availableCopies
         self.db.books.update_one(

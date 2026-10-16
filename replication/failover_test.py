@@ -6,10 +6,13 @@ failover_test.py - Distributed Systems Concepts 2 & 3:
 
 import time
 import subprocess
+from pathlib import Path
 import pymongo
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError, NotPrimaryError
 from tabulate import tabulate
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 REPLICA_SET_URI = "mongodb://127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020/?replicaSet=rs0&serverSelectionTimeoutMS=2000"
 NODES = [
@@ -57,7 +60,7 @@ def stop_node(port):
     print(f"[x] Shutdown signal sent to node on port {port}.")
 
 def restart_node(node_info):
-    """Restarts a stopped mongod node."""
+    """Restarts a stopped mongod node and verifies readiness."""
     import os
     import sys
     import glob
@@ -69,12 +72,17 @@ def restart_node(node_info):
         m_find = shutil.which("mongod")
         mongod_path = m_find if m_find else "mongod.exe"
 
+    dbpath = str(PROJECT_ROOT / node_info["dbpath"])
+    logdir = PROJECT_ROOT / "data" / "logs"
+    logdir.mkdir(parents=True, exist_ok=True)
+    logpath = str(logdir / f"rs0_node_{node_info['port']}.log")
+
     cmd = [
         mongod_path,
         "--replSet", "rs0",
         "--port", str(node_info["port"]),
-        "--dbpath", node_info["dbpath"],
-        "--logpath", f"data\\logs\\rs0_node_{node_info['port']}.log",
+        "--dbpath", dbpath,
+        "--logpath", logpath,
         "--wiredTigerCacheSizeGB", "0.25",
         "--bind_ip", "127.0.0.1"
     ]
@@ -84,8 +92,18 @@ def restart_node(node_info):
         if hasattr(subprocess, "DETACHED_PROCESS"):
             flags |= subprocess.DETACHED_PROCESS
     subprocess.Popen(cmd, creationflags=flags)
-    print(f"[+] Restarted node on port {node_info['port']}.")
-    time.sleep(3)
+    print(f"[+] Restarted node on port {node_info['port']}. Waiting for readiness...")
+
+    # Wait up to 15 seconds for node to respond to ping
+    poll_start = time.time()
+    while time.time() - poll_start < 15:
+        try:
+            probe = MongoClient(f"mongodb://127.0.0.1:{node_info['port']}/?directConnection=true", serverSelectionTimeoutMS=1000)
+            probe.admin.command("ping")
+            probe.close()
+            break
+        except Exception:
+            time.sleep(0.5)
 
 def run_fault_tolerance_demo():
     print("\n" + "=" * 75)
